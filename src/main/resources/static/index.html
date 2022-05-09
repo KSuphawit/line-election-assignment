@@ -1,0 +1,64 @@
+<html>
+<head>
+    <title>Election Voting Monitor WebSocket</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sockjs-client@1/dist/sockjs.min.js"></script>
+    <script type="text/javascript">
+        let stompClient = null;
+        const socketEndpoint = "/api/line-election-socket"
+        const newVoteTopicSubscribe = "/topic/new-vote"
+
+        function setConnected(connected) {
+            document.getElementById('connect').disabled = connected;
+            document.getElementById('disconnect').disabled = !connected;
+            document.getElementById('connected-div').style.visibility = connected ? 'visible' : 'hidden';
+            document.getElementById('response').innerHTML = '';
+        }
+
+        function connect() {
+            const socket = new SockJS(socketEndpoint);
+            stompClient = Stomp.over(socket);
+            stompClient.connect({}, function (frame) {
+                setConnected(true);
+                console.log('Connected: ' + frame);
+                stompClient.subscribe(newVoteTopicSubscribe, function (response) {
+                    showInformation(response.body);
+                });
+            });
+        }
+
+        function disconnect() {
+            if (stompClient != null) {
+                stompClient.disconnect();
+            }
+            setConnected(false);
+            console.log("Disconnected");
+        }
+
+        function showInformation(candidateData) {
+            const response = document.getElementById('response');
+            const p = document.createElement('p');
+            p.appendChild(document.createTextNode("Got new voting information of candidate : " + candidateData))
+            response.appendChild(p);
+        }
+    </script>
+</head>
+<body onload="disconnect()">
+<div>
+    <h1>Demo Election Voting Monitor</h1>
+    <br/>
+    <div>
+        <button id="connect" onclick="connect();">Connect</button>
+        <button id="disconnect" disabled="disabled" onclick="disconnect();">
+            Disconnect
+        </button>
+    </div>
+    <br/>
+    <div id="connected-div">
+        <h4>Connected to the election server</h4>
+        <p id="response"></p>
+    </div>
+</div>
+
+</body>
+</html>

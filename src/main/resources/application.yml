@@ -1,0 +1,40 @@
+server:
+  port: 10099
+  servlet:
+    context-path: /api
+
+auth0:
+  audience: https://line-election-assignment/api
+
+spring:
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: https://dev-z186qjy4.us.auth0.com/
+  datasource:
+    url: jdbc:sqlserver://localhost:1433;database=master
+    driverClassName: com.microsoft.sqlserver.jdbc.SQLServerDriver
+    username: sa
+    password: reallyStrongPwd123
+  jpa:
+    database-platform: org.hibernate.dialect.SQLServer2012Dialect
+    properties:
+      hibernate.hbm2ddl.auto: none
+      hibernate.default_schema: dbo
+      hibernate.enable_lazy_load_no_trans: true
+    show-sql: true
+  flyway:
+    enabled: true
+    validateOnMigrate: false
+    schemas: dbo
+    baselineOnMigrate: true
+
+web-socket:
+  endpoint: /line-election-socket
+  newVote: /topic/new-vote
+
+logging:
+  level:
+    lineelection: INFO
+    org.hibernate.SQL: DEBUG

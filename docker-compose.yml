@@ -1,0 +1,18 @@
+version: "3"
+
+networks:
+  mynetwork:
+    driver: bridge
+
+services:
+  sql-server:
+    image: mcr.microsoft.com/azure-sql-edge
+    container_name: sqlserver
+    tty: true
+    environment:
+      SA_PASSWORD: "reallyStrongPwd123"
+      ACCEPT_EULA: "Y"
+    ports:
+      - "1433:1433"
+    networks:
+      - mynetwork
