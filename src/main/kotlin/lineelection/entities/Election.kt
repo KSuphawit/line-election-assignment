@@ -42,14 +42,18 @@ fun Election.isVotingTime(): Boolean {
  * Method for check current date is in period voting time
  */
 fun Election.isInVotingTime(): Boolean {
-    return (this.startVotingDate?.before(Date()) ?: false) && (this.endVotingDate?.after(Date()) ?: false)
+    val isPassStartVotingDate = this.startVotingDate?.before(Date()) ?: false
+    val isNotPassEndVotingDate = this.endVotingDate?.after(Date()) ?: false
+    return isPassStartVotingDate && isNotPassEndVotingDate
 }
 
 /**
  * Method for check current date is pass period voting time
  */
 fun Election.isPassVotingTime(): Boolean {
-    return (this.startVotingDate?.before(Date()) ?: false) && (this.endVotingDate?.before(Date()) ?: false)
+    val isPassStartVotingDate = this.startVotingDate?.before(Date()) ?: false
+    val isPassEndVotingDate = this.endVotingDate?.before(Date()) ?: false
+    return isPassStartVotingDate && isPassEndVotingDate
 }
 
 /**
