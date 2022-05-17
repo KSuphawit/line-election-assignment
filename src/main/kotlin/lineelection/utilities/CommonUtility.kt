@@ -6,8 +6,7 @@ import lineelection.constants.invalidNationalId
 /**
  * Method for validate if criteria not matched this function will throw an error
  */
-@Suppress("NOTHING_TO_INLINE")
-inline infix fun String.validate(criteria: Boolean) {
+infix fun String.validate(criteria: Boolean) {
     if (!criteria) throw IllegalArgumentException(this)
 }
 
