@@ -63,7 +63,7 @@ class ElectionService {
      */
     private fun openVote(election: Election): Election {
 
-        electionIsVotingOrClosed validate (election.status == ElectionStatus.RUN_FOR_ELECTION.name)
+        electionIsVotingOrClosed validate (election.status == ElectionStatus.OPEN_APPLICATION.name)
 
         isNotElectionVoteTime validate election.isInVotingTime()
 

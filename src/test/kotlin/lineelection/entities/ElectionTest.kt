@@ -29,7 +29,7 @@ class ElectionTest {
         assertTrue(result)
 
         // Case status != VOTING && in voting time
-        result = election.copy(status = ElectionStatus.RUN_FOR_ELECTION.name).isVotingTime()
+        result = election.copy(status = ElectionStatus.OPEN_APPLICATION.name).isVotingTime()
         assertFalse(result)
 
         // Case status == VOTING && not in voting time
@@ -39,7 +39,7 @@ class ElectionTest {
         assertFalse(result)
 
         // Case status != VOTING && not in voting time
-        result = election.copy(status = ElectionStatus.RUN_FOR_ELECTION.name).isVotingTime()
+        result = election.copy(status = ElectionStatus.OPEN_APPLICATION.name).isVotingTime()
         assertFalse(result)
 
         unmockkAll()

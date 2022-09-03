@@ -112,7 +112,7 @@ class ElectionServiceTest {
     @Test
     fun testOpenVote() {
         mockkStatic("lineelection.entities.ElectionKt")
-        val election = election.copy(status = ElectionStatus.RUN_FOR_ELECTION.name)
+        val election = election.copy(status = ElectionStatus.OPEN_APPLICATION.name)
 
         // Case Election is voting or closed
         var result = Try.on {
@@ -127,7 +127,7 @@ class ElectionServiceTest {
         every { election.isInVotingTime() } returns false andThen true
 
         result = Try.on {
-            ReflectionTestUtils.invokeMethod<Election>(electionService, "openVote", election.copy(status = ElectionStatus.RUN_FOR_ELECTION.name))
+            ReflectionTestUtils.invokeMethod<Election>(electionService, "openVote", election.copy(status = ElectionStatus.OPEN_APPLICATION.name))
         }
         assertTrue(result.isFailure)
         assertTrue(result.toString().contains(isNotElectionVoteTime))
@@ -139,7 +139,7 @@ class ElectionServiceTest {
         every { election.openVote() } returns election.copy(status = ElectionStatus.VOTING.name)
 
         result = Try.on {
-            ReflectionTestUtils.invokeMethod<Election>(electionService, "openVote", election.copy(status = ElectionStatus.RUN_FOR_ELECTION.name))
+            ReflectionTestUtils.invokeMethod<Election>(electionService, "openVote", election.copy(status = ElectionStatus.OPEN_APPLICATION.name))
         }
         assertTrue(result.isSuccess)
         assertEquals(election.copy(status = ElectionStatus.VOTING.name), result.getOrThrow())

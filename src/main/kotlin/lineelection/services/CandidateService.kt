@@ -117,7 +117,7 @@ class CandidateService {
 
         dataNotFound.format(Election::class.java.simpleName) validate (election != null)
 
-        electionApplicationRunOutOfTime validate (election?.status == ElectionStatus.RUN_FOR_ELECTION.name)
+        electionApplicationRunOutOfTime validate (election?.status == ElectionStatus.OPEN_APPLICATION.name)
 
         return election!!
     }

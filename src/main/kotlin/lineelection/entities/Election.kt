@@ -10,22 +10,22 @@ import javax.persistence.*
 @Entity
 @Table(name = "election")
 data class Election(
-        @Id
+    @Id
         @GeneratedValue(strategy = GenerationType.IDENTITY)
         var id: Long? = null,
-        var startVotingDate: Date? = null,
-        var endVotingDate: Date? = null,
+    var startVotingDate: Date? = null,
+    var endVotingDate: Date? = null,
 
-        @OneToMany(cascade = [CascadeType.ALL], fetch = FetchType.EAGER, mappedBy = "election", orphanRemoval = true)
+    @OneToMany(cascade = [CascadeType.ALL], fetch = FetchType.EAGER, mappedBy = "election", orphanRemoval = true)
         var candidates: MutableList<Candidate> = mutableListOf(),
 
-        var status: String? = ElectionStatus.RUN_FOR_ELECTION.name,
+    var status: String? = ElectionStatus.OPEN_APPLICATION.name,
 
-        @CreationTimestamp
+    @CreationTimestamp
         @Column(name = "created_date", updatable = false)
         var createdDate: Date? = null,
 
-        @UpdateTimestamp
+    @UpdateTimestamp
         @Column(name = "updated_date", insertable = false)
         var updatedDate: Date? = null,
 ) : Serializable

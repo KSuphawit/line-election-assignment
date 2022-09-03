@@ -202,7 +202,7 @@ class CandidateServiceTest {
 
     @Test
     fun testGetAndValidateElection() {
-        val election = Election(status = ElectionStatus.RUN_FOR_ELECTION.name)
+        val election = Election(status = ElectionStatus.OPEN_APPLICATION.name)
 
         every { electionRepository.findCurrentElection() } returns null andThen election.copy(status = ElectionStatus.VOTING.name) andThen election
 
