@@ -59,13 +59,13 @@ class VoteServiceTest {
     private val voterBallot = VoterBallot(electionId = election.id, nationalId = voteModel.nationalId)
 
     private val candidate = Candidate(
-            id = 1L,
-            name = "name",
-            dob = Date(),
-            bioLink = "bioLink",
-            imageLink = "imageLink",
-            policy = "policy",
-            votedCount = 78
+        id = 1L,
+        name = "name",
+        dob = Date(),
+        bioLink = "bioLink",
+        imageLink = "imageLink",
+        policy = "policy",
+        votedCount = 78
     )
 
     @Before
@@ -75,7 +75,10 @@ class VoteServiceTest {
     fun testNationalIdVoteStatus() {
         val voteService = spyk<VoteService>(recordPrivateCalls = true)
 
-        every { voteService["validateAndQueryRelatedData"](voteModel) } returns Pair(election, voterBallot) andThen Pair(election, null)
+        every { voteService["validateAndQueryRelatedData"](voteModel) } returns Pair(
+            election,
+            voterBallot
+        ) andThen Pair(election, null)
 
         // Case not allow vote
         var result = voteService.nationalIdVoteStatus(voteModel)
@@ -127,12 +130,17 @@ class VoteServiceTest {
     @Test
     fun testBoardCastCandidateScore() {
         val candidateModel = CandidateModel(
-                id = candidate.id,
-                votedCount = candidate.votedCount
+            id = candidate.id,
+            votedCount = candidate.votedCount
         )
 
         every { webSocketProperties.newVote } returns "new-vote"
-        every { simpMessagingTemplate.convertAndSend("new-vote", candidateModel) } throws Exception("Test Exception") andThen Unit
+        every {
+            simpMessagingTemplate.convertAndSend(
+                "new-vote",
+                candidateModel
+            )
+        } throws Exception("Test Exception") andThen Unit
 
         // Case failed but function success due to try catch
         var result = Try.on {
@@ -154,16 +162,20 @@ class VoteServiceTest {
     fun testValidateAndQueryRelatedData() {
         mockkStatic("lineelection.utilities.CommonUtilityKt")
 
-        every { voteModel.nationalId?.isValidNationalId() } returns Unit
+        every { isValidNationalId(voteModel.nationalId) } returns Unit
         every { electionRepository.findCurrentElection() } returns null andThen election.copy(status = ElectionStatus.CLOSED.name) andThen election
 
         // Case Election not found
         var result = Try.on {
-            ReflectionTestUtils.invokeMethod<Pair<Election, VoterBallot?>>(voteService, "validateAndQueryRelatedData", voteModel)
+            ReflectionTestUtils.invokeMethod<Pair<Election, VoterBallot?>>(
+                voteService,
+                "validateAndQueryRelatedData",
+                voteModel
+            )
         }
         assertTrue(result.isFailure)
         assertTrue(result.toString().contains("Election not found"))
-        verify(exactly = 1) { voteModel.nationalId?.isValidNationalId() }
+        verify(exactly = 1) { isValidNationalId(voteModel.nationalId) }
         verify(exactly = 1) { electionRepository.findCurrentElection() }
         verify(exactly = 0) { voterBallotRepository.findByIdOrNull(any()) }
         clearAllMocks(answers = false)
@@ -171,24 +183,39 @@ class VoteServiceTest {
 
         // Case Election is closed
         result = Try.on {
-            ReflectionTestUtils.invokeMethod<Pair<Election, VoterBallot?>>(voteService, "validateAndQueryRelatedData", voteModel)
+            ReflectionTestUtils.invokeMethod<Pair<Election, VoterBallot?>>(
+                voteService,
+                "validateAndQueryRelatedData",
+                voteModel
+            )
         }
         assertTrue(result.isFailure)
         assertTrue(result.toString().contains(electionIsClosed))
-        verify(exactly = 1) { voteModel.nationalId?.isValidNationalId() }
+        verify(exactly = 1) { isValidNationalId(voteModel.nationalId) }
         verify(exactly = 1) { electionRepository.findCurrentElection() }
         verify(exactly = 0) { voterBallotRepository.findByIdOrNull(any()) }
         clearAllMocks(answers = false)
 
         // Case Success
-        every { voterBallotRepository.findByIdOrNull(VoterBallotPk(election.id, voteModel.nationalId)) } returns voterBallot
+        every {
+            voterBallotRepository.findByIdOrNull(
+                VoterBallotPk(
+                    election.id,
+                    voteModel.nationalId
+                )
+            )
+        } returns voterBallot
 
         result = Try.on {
-            ReflectionTestUtils.invokeMethod<Pair<Election, VoterBallot?>>(voteService, "validateAndQueryRelatedData", voteModel)
+            ReflectionTestUtils.invokeMethod<Pair<Election, VoterBallot?>>(
+                voteService,
+                "validateAndQueryRelatedData",
+                voteModel
+            )
         }
         assertTrue(result.isSuccess)
         assertEquals(Pair(election, voterBallot), result.getOrThrow())
-        verify(exactly = 1) { voteModel.nationalId?.isValidNationalId() }
+        verify(exactly = 1) { isValidNationalId(voteModel.nationalId) }
         verify(exactly = 1) { electionRepository.findCurrentElection() }
         verify(exactly = 1) { voterBallotRepository.findByIdOrNull(VoterBallotPk(election.id, voteModel.nationalId)) }
 

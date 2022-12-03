@@ -11,17 +11,17 @@ import kotlin.test.assertTrue
 class CommonUtilityTest {
 
     data class Person(
-            val id: Long? = null,
-            val name: String? = null,
-            val salary: BigDecimal? = null,
-            val dob: Date? = null
+        val id: Long? = null,
+        val name: String? = null,
+        val salary: BigDecimal? = null,
+        val dob: Date? = null
     )
 
     private val person = Person(
-            id = 1L,
-            name = "ABC",
-            salary = BigDecimal.TEN,
-            dob = Date()
+        id = 1L,
+        name = "ABC",
+        salary = BigDecimal.TEN,
+        dob = Date()
     )
 
     @Test
@@ -44,28 +44,28 @@ class CommonUtilityTest {
     fun testIsValidNationId() {
         // Case Invalid national id due to input is null
         var result = Try.on {
-            null.isValidNationalId()
+            isValidNationalId(null)
         }
         assertTrue(result.isFailure)
         assertTrue(result.toString().contains(invalidNationalId))
 
         // Case Invalid national id due to input is blank
         result = Try.on {
-            "    ".isValidNationalId()
+            isValidNationalId("    ")
         }
         assertTrue(result.isFailure)
         assertTrue(result.toString().contains(invalidNationalId))
 
         // Case Invalid national id due to check sum not matched
         result = Try.on {
-            "1234567890123".isValidNationalId()
+            isValidNationalId("1234567890123")
         }
         assertTrue(result.isFailure)
         assertTrue(result.toString().contains(invalidNationalId))
 
         // Case pass
         result = Try.on {
-            "1130100550069".isValidNationalId()
+            isValidNationalId("1130100550069")
         }
         assertTrue(result.isSuccess)
     }

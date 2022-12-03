@@ -13,22 +13,22 @@ infix fun String.validate(criteria: Boolean) {
 /**
  * Method for validate thai nation id
  */
-fun String?.isValidNationalId() {
+fun isValidNationalId(nationID : String?) {
 
-    if (this.isNullOrBlank() || this.length != 13) throw IllegalArgumentException(invalidNationalId)
+    if (nationID.isNullOrBlank() || nationID.length != 13) throw IllegalArgumentException(invalidNationalId)
 
     try {
         var sum = 0
 
         for (i in 0..11) {
-            sum += this[i].digitToInt() * (13 - i);
+            sum += nationID[i].digitToInt() * (13 - i);
         }
 
         val mod = sum % 11;
 
         val checkSum = (11 - mod) % 10;
 
-        if (checkSum != this[12].digitToInt()) throw IllegalArgumentException(invalidNationalId)
+        if (checkSum != nationID[12].digitToInt()) throw IllegalArgumentException(invalidNationalId)
 
     } catch (e: Exception) {
         throw IllegalArgumentException(invalidNationalId)

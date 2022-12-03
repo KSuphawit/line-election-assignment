@@ -113,7 +113,7 @@ class VoteService {
      */
     private fun validateAndQueryRelatedData(voteModel: VoteModel): Pair<Election, VoterBallot?> {
 
-        voteModel.nationalId?.isValidNationalId()
+        isValidNationalId(voteModel.nationalId)
 
         val election = electionRepository.findCurrentElection()
 
